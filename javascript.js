@@ -1,61 +1,78 @@
+class Producto{
+    constructor(id,nombre,marca,precio,stock){
+        this.id = id;
+        this.nombre = nombre;
+        this.precio = precio;
+        this.marca = marca;
+        this.stock = stock
+    }
+    //Futuramente lo voy a utilizar junto con la minipulacion del DOM para disminuir el stock a medida que se selecciona para comprar un producto.
+    restarStock(){
+        this.stock = this.stock - 1;
+        console.log(`El stock de ${this.nombre} ha sido actualizado`);
+    }
+}
 
-let cantidad = 0;
+//Creamos los productos para vender
+
+const producto0 = new Producto(0,"Teclado Gamer", "Logitech",4000,5);
+const producto1 = new Producto(1,"Auricular Gamer", "Logitech",5000,4);
+const producto2 = new Producto(2,"Mouse inalambrico", "Corsair",6000,6);
+const producto3 = new Producto(3,"Mouse Gamer", "RedDragon",3000,3);
+const producto4 = new Producto(4,"Monitor Gamer", "Asus",40000,3);
+const producto5 = new Producto(5,"Mouse Pad", "Razer",2000,2);
+
+const misProductos = [producto0,producto1, producto2,producto3,producto4,producto5];
+
 let precio = 0;
 let acumulador = 0;
-let teclado = 2000;
-let mouse = 1500;
-let mousepad = 1000;
-let monitor = 10000;
 let terminar = 0;
+let productoElegido;
+const conjuntoDeProductos = [];
 
 alert("Bienvenido a Computotal, cadena NRO 1 de ventas de electrodomesticos");
+
+
 //Switch para elegir la opcion de comprar, Formas de pago o salir.
 while (terminar == 0) {
-    let opcion = parseInt(prompt("Seleccione: \n1.-Para comprar \n2.-Para seleccionar metodos de pago \n3.-Para salir"));
+    let opcion = parseInt(prompt("Seleccione: \n1.-Para ingresar al menu de compras \n2.-Para seleccionar metodos de pago \n3.-Para salir"));
     switch (opcion) {
         case 1:
             let continuar = 0;
             while (continuar == 0) {
-                let Seleccion = parseInt(prompt("Seleccione 1.-Para Comprar teclado logitech por $2000\nSeleccione 2.-Para comprar mouse logitech por $1500\nSeleccione 3.-Para comprar mousePad logitech por $1000\nSeleccione 4.-Para comprar monitor MSI gamer por $10000"));
-// Segundo switch para elegir que producto comprar y cuantos productos de cada uno comprar.
-                switch (Seleccion) {
+                ;
+                let seleccion = parseInt(prompt("Seleccione 1- Para comprar \n Seleccione 2- para ver el carrito de compras"));
+                // Segundo switch para elegir que producto comprar.
+                switch (seleccion) {
                     case 1:
-                        cantidad = parseInt(prompt("Cuantos Teclados logitech quiere comprar?"));
-                        console.log(cantidad);
-                        total = teclado * cantidad;
-                        console.log(total);
-                        precio = SumaProductos(total, precio);
-                        console.log(precio);
+                        let mensajeDeProductos = "Estos son nuestros productos a la venta: \n "
+                //For of para mostrar la lista de los productos a la venta y elegir mediante prompt
+                        for(items of misProductos){
+                            mensajeDeProductos += `${items.id} ${items.nombre} ${items.marca} oferta en $${items.precio} Stock: ${items.stock} \n `
+                        }
+
+                        const opcionUser = parseInt(prompt(mensajeDeProductos));
+                //Utilizacion del metodo find para seleccionar el item a comprar dentro del array de productos        
+                        productoElegido = misProductos.find(item => item.id === opcionUser);
+                // Metodo push para ingresar los items seleccionados al carrito de compras            
+                        conjuntoDeProductos.push(productoElegido);
+                // Acumulador de precio total a pagar        
+                        precio = precioFinal(productoElegido.precio,precio);
+
                         break;
                     case 2:
-                        cantidad = parseInt(prompt("Cuantos Mouse Logitech quiere comprar?"))
-                        console.log(cantidad);
-                        total = mouse * cantidad;
-                        console.log(total);
-                        precio = SumaProductos(total, precio);
-                        console.log(precio);
-                        break;
-                    case 3:
-                        cantidad = parseInt(prompt("Cuantos MousePad Genius quiere comprar?"))
-                        console.log(cantidad);
-                        total = mousepad * cantidad;
-                        console.log(total);
-                        precio = SumaProductos(total, precio);
-                        console.log(precio);
-                        break;
-                    case 4:
-                        cantidad = parseInt(prompt("Cuantos Monitor Samsung quiere comprar?"))
-                        console.log(cantidad);
-                        total = monitor * cantidad;
-                        console.log(total);
-                        precio = SumaProductos(total, precio);
-                        console.log(precio);
+                        //Funcion para mostrar el carrito de compras y el precio total a pagar del carrito mediante un alert.
+                        let carrito = "CARRITO DE COMPRAS: \n  \n "
+                        for(producto of conjuntoDeProductos){
+                            carrito += ` ${producto.nombre} ${producto.marca} $${producto.precio}  \n `
+                        }
+                        alert(carrito + "\n PrecioTotal: " +  precio);
                         break;
                     default: alert("Opcion invalida");
                         break;
                 }
                 alert("Usted lleva gastando un total de: $" + precio);
-                continuar = prompt("Desea continuar comprando ? seleccione 0 para seguir comprando o seleccione el 1 para salir");
+                continuar = prompt("Desea continuar comprando ? seleccione 0 para seguir comprando o seleccione el 3 para salir");
             }
             break;
         case 2:
@@ -69,11 +86,12 @@ while (terminar == 0) {
     }
     alert("Gracias por su compra");
 }
-//Funcion para sumar los precios de los productos y devolver el acumulado para ver el total de la compra.
-function SumaProductos(precio, acumulador) {
-    acumulador = acumulador + precio;
+// Funcion para sumar los precios de los productos y devolver el acumulado para ver el total de la compra.
+function precioFinal(productoElegido, acumulador) {
+    acumulador +=  productoElegido;
     return acumulador;
 }
+
 
 //Funcion para mostrar el acumulado sin modificar pagando con debito y moficandolo al pagar con tarjeta de credito en mas de 3 cuotas.
 function formasDePago(acumulador) {
@@ -107,8 +125,19 @@ function formasDePago(acumulador) {
 }
 
 
+//Funcion para buscar un producto mediante un input (Futuramente lo voy a utilizar con la minupulacion del DOM en mi proxima entrega)
+//Lo deje comentado para que no se ejecute, funciona bien el codigo pero prefieron mostrarlo con el DOM en vez de console.table o alerts.
 
+// let buscar = prompt("Escriba el nombre del producto que quiere comprar");
+// const productoBuscado = misProductos.filter((item) => item.nombre.includes(buscar));
+// console.table(productoBuscado);
 
+//Funcion para ordenar mi pagina de productos mediante menor a mayor precio o viceversa(Futuramente lo voy a utilizar con la minupulacion del DOM en mi proxima entrega)
+
+misProductos.sort((a,b) => a.precio - b.precio);//ascendente
+// console.log(misProductos);
+misProductos.sort((a,b) => b.precio - a.precio);//descendente
+// console.log(misProductos);
 
 
 
